@@ -1,5 +1,5 @@
 import { LayoutGrid, Package, ShoppingBasket } from "lucide-react";
-import { Button } from "./ui/button";
+import SidebarButton from "./sidebar-button";
 
 export function Sidebar() {
   return (
@@ -8,18 +8,18 @@ export function Sidebar() {
         <h1 className="text-2xl font-black">STOCKLY</h1>
       </div>
       <div className="flex flex-col gap-2 p-2">
-        <Button variant="ghost" className="justify-start gap-2">
+        <SidebarButton href="/">
           <LayoutGrid className="size-5" />
           Dashboard
-        </Button>
-        <Button variant="ghost" className="justify-start gap-2">
+        </SidebarButton>
+        <SidebarButton href="/products">
           <Package className="size-5" />
           Products
-        </Button>
-        <Button variant="ghost" className="justify-start gap-2">
+        </SidebarButton>
+        <SidebarButton href="/sales">
           <ShoppingBasket className="size-5" />
           Sales
-        </Button>
+        </SidebarButton>
       </div>
     </div>
   );

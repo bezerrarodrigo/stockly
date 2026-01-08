@@ -1,7 +1,7 @@
 function SalesPage() {
   return (
     <div>
-      <h1>Sales Page</h1>
+      <h1>Sales page</h1>
     </div>
   );
 }
