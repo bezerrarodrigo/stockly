@@ -13,6 +13,16 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    plugins: ["simple-import-sort"],
+    rules: {
+      "simple-import-sort/imports": "error",
+    },
+    parserOptions: {
+      sourceType: "module",
+      ecmaVersion: "latest",
+    },
+  },
 ]);
 
 export default eslintConfig;
