@@ -1,0 +1,154 @@
+"use client";
+
+import { Button } from "@/app/_components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/app/_components/ui/dialog";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/app/_components/ui/field";
+import { Input } from "@/app/_components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { log } from "console";
+import { PlusIcon } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
+import { NumericFormat } from "react-number-format";
+
+const addProductSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, { message: "Name must be at least 2 characters." }),
+  price: z.number().min(0.01, { message: "Price must be at least 0.01." }),
+  stock: z.number().int().min(1, { message: "Stock is required." }),
+});
+
+type AddProductFormData = z.infer<typeof addProductSchema>;
+
+function onSubmit(data: AddProductFormData) {
+  console.log(data);
+}
+
+// <-- Component --> //
+
+function AddProductButton() {
+  //hooks
+  const form = useForm<AddProductFormData>({
+    resolver: zodResolver(addProductSchema),
+    defaultValues: {
+      name: "",
+      price: 0,
+      stock: 1,
+    },
+    shouldUnregister: true,
+  });
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>
+          <PlusIcon className="size-5" />
+          New product
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <DialogHeader>
+            <DialogTitle>Create product</DialogTitle>
+            <DialogDescription>
+              Please, fill in the information below.
+            </DialogDescription>
+          </DialogHeader>
+          <FieldGroup className="mt-4 gap-4">
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Product Name</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Enter product name here"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="price"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Price</FieldLabel>
+                  <NumericFormat
+                    customInput={Input}
+                    {...field}
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    decimalScale={2}
+                    fixedDecimalScale
+                    allowNegative={false}
+                    prefix="R$ "
+                    onValueChange={(values) =>
+                      field.onChange(values.floatValue)
+                    }
+                    onChange={() => {}}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="stock"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Stock</FieldLabel>
+                  <Input
+                    type="number"
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Enter product stock here"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+          <DialogFooter className="mt-4">
+            <DialogClose asChild>
+              <Button variant="secondary" type="button">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit">Create product</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default AddProductButton;
