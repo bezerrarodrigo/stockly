@@ -28,6 +28,7 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 import * as z from "zod";
 
 function CreateProductButton() {
@@ -50,8 +51,10 @@ function CreateProductButton() {
     try {
       await createProduct(data); // server action
       setDialogOpen(false);
+      toast.success("Product created successfully!");
     } catch (error) {
       console.log(error);
+      toast.error("There was an error creating the product.");
     }
   }
 

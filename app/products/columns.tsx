@@ -19,6 +19,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../_components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../_components/ui/alert-dialog";
+import deleteProduct from "../_actions/products/delete-product";
+import DeleteDialogContent from "./_components/delete-dialog-content";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") {
@@ -67,31 +80,36 @@ export const columns: ColumnDef<Product>[] = [
     cell: (row) => {
       const product = row.row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <MoreHorizontalIcon size={20} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
-            >
-              <ClipboardCopyIcon size={16} />
-              Copy ID
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <EditIcon size={16} />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <TrashIcon size={16} />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <MoreHorizontalIcon size={20} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(product.id)}
+              >
+                <ClipboardCopyIcon size={16} />
+                Copy ID
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <EditIcon size={16} />
+                Edit
+              </DropdownMenuItem>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem>
+                  <TrashIcon size={16} />
+                  Delete
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DeleteDialogContent productId={product.id} />
+        </AlertDialog>
       );
     },
   },
