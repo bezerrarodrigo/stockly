@@ -1,5 +1,6 @@
 "use client";
 
+import createProduct from "@/app/_actions/products/create-product";
 import { Button } from "@/app/_components/ui/button";
 import {
   Dialog,
@@ -19,11 +20,11 @@ import {
 import { Input } from "@/app/_components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { log } from "console";
-import { PlusIcon } from "lucide-react";
+import { Loader2Icon, PlusIcon } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 import { NumericFormat } from "react-number-format";
+import * as z from "zod";
 
 const addProductSchema = z.object({
   name: z
@@ -36,13 +37,10 @@ const addProductSchema = z.object({
 
 type AddProductFormData = z.infer<typeof addProductSchema>;
 
-function onSubmit(data: AddProductFormData) {
-  console.log(data);
-}
-
-// <-- Component --> //
-
 function AddProductButton() {
+  //state
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   //hooks
   const form = useForm<AddProductFormData>({
     resolver: zodResolver(addProductSchema),
@@ -54,8 +52,21 @@ function AddProductButton() {
     shouldUnregister: true,
   });
 
+  //functions
+
+  async function onSubmit(data: AddProductFormData) {
+    try {
+      await createProduct(data); // server action
+      setDialogOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // <-- Component Render --> //
+
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="size-5" />
@@ -104,7 +115,7 @@ function AddProductButton() {
                     decimalScale={2}
                     fixedDecimalScale
                     allowNegative={false}
-                    prefix="R$ "
+                    prefix="$ "
                     onValueChange={(values) =>
                       field.onChange(values.floatValue)
                     }
@@ -122,13 +133,13 @@ function AddProductButton() {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Stock</FieldLabel>
-                  <Input
-                    type="number"
+                  <NumericFormat
                     {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter product stock here"
-                    autoComplete="off"
+                    customInput={Input}
+                    onValueChange={(values) =>
+                      field.onChange(values.floatValue)
+                    }
+                    onChange={() => {}}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -143,7 +154,12 @@ function AddProductButton() {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Create product</Button>
+            <Button type="submit" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting && (
+                <Loader2Icon className="size-5 animate-spin" />
+              )}
+              Add product
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

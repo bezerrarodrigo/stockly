@@ -20,6 +20,10 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "price",
     header: "Price",
+    cell: ({ row }) => {
+      const product = row.original;
+      return `$ ${product.price}`;
+    },
   },
   {
     accessorKey: "stock",
