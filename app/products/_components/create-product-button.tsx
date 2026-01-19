@@ -26,7 +26,7 @@ import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import * as z from "zod";
 
-const addProductSchema = z.object({
+const createProductSchema = z.object({
   name: z
     .string()
     .trim()
@@ -35,15 +35,15 @@ const addProductSchema = z.object({
   stock: z.number().int().min(1, { message: "Stock is required." }),
 });
 
-type AddProductFormData = z.infer<typeof addProductSchema>;
+export type CreateProductSchema = z.infer<typeof createProductSchema>;
 
-function AddProductButton() {
+function CreateProductButton() {
   //state
   const [dialogOpen, setDialogOpen] = useState(false);
 
   //hooks
-  const form = useForm<AddProductFormData>({
-    resolver: zodResolver(addProductSchema),
+  const form = useForm<CreateProductSchema>({
+    resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: "",
       price: 0,
@@ -53,8 +53,7 @@ function AddProductButton() {
   });
 
   //functions
-
-  async function onSubmit(data: AddProductFormData) {
+  async function onSubmit(data: CreateProductSchema) {
     try {
       await createProduct(data); // server action
       setDialogOpen(false);
@@ -167,4 +166,4 @@ function AddProductButton() {
   );
 }
 
-export default AddProductButton;
+export default CreateProductButton;

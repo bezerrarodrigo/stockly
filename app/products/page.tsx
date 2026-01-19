@@ -1,5 +1,5 @@
 import { getProducts } from "../_data-access/products/get-products";
-import AddProductButton from "./_components/add-product-button";
+import CreateProductButton from "./_components/create-product-button";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
@@ -15,7 +15,7 @@ export default async function Products() {
           <span className="text-sm font-semibold text-slate-500">Products</span>
           <h2 className="text-xl font-semibold">Products Manager</h2>
         </div>
-        <AddProductButton />
+        <CreateProductButton />
       </div>
       <DataTable columns={columns} data={products} />
     </div>
