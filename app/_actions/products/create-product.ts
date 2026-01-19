@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/app/_lib/prisma";
-import { CreateProductSchema } from "@/app/products/_components/create-product-button";
 import { revalidatePath } from "next/cache";
+import { CreateProductSchema } from "./_schemas/schemas";
 
 async function createProduct(data: CreateProductSchema) {
   await db.product.create({ data });

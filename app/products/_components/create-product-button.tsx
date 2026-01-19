@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  createProductSchema,
+  CreateProductSchema,
+} from "@/app/_actions/products/_schemas/schemas";
 import createProduct from "@/app/_actions/products/create-product";
 import { Button } from "@/app/_components/ui/button";
 import {
@@ -25,17 +29,6 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import * as z from "zod";
-
-const createProductSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(2, { message: "Name must be at least 2 characters." }),
-  price: z.number().min(0.01, { message: "Price must be at least 0.01." }),
-  stock: z.number().int().min(1, { message: "Stock is required." }),
-});
-
-export type CreateProductSchema = z.infer<typeof createProductSchema>;
 
 function CreateProductButton() {
   //state
