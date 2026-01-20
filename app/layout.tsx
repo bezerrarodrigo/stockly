@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <div className="flex h-full">
-          <Toaster />
+          <Toaster position="bottom-center" />
           <Sidebar />
           {children}
         </div>
