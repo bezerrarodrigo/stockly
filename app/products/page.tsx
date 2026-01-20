@@ -1,5 +1,5 @@
 import { getProducts } from "../_data-access/products/get-products";
-import CreateProductButton from "./_components/create-product-button";
+import CreateProductButton from "./_components/create-button";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 

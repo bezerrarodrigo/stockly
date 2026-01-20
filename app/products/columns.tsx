@@ -9,6 +9,10 @@ import {
   MoreHorizontalIcon,
   TrashIcon,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+} from "../_components/ui/alert-dialog";
 import { Badge } from "../_components/ui/badge";
 import { Button } from "../_components/ui/button";
 import {
@@ -19,19 +23,60 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../_components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../_components/ui/alert-dialog";
-import deleteProduct from "../_actions/products/delete-product";
 import DeleteDialogContent from "./_components/delete-dialog-content";
+import { Dialog } from "../_components/ui/dialog";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import UpsertDialogProductContent from "./_components/dialog-content";
+import { useState } from "react";
+
+const ActionCell = ({ product }: { product: Product }) => {
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  return (
+    <AlertDialog>
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost">
+              <MoreHorizontalIcon size={20} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(product.id)}
+            >
+              <ClipboardCopyIcon size={16} />
+              Copy ID
+            </DropdownMenuItem>
+            <DialogTrigger asChild>
+              <DropdownMenuItem>
+                <EditIcon size={16} />
+                Edit
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <AlertDialogTrigger asChild>
+              <DropdownMenuItem>
+                <TrashIcon size={16} />
+                Delete
+              </DropdownMenuItem>
+            </AlertDialogTrigger>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <UpsertDialogProductContent
+          defaultValues={{
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            stock: product.stock,
+          }}
+          onClose={() => setEditDialogOpen(false)}
+        />
+        <DeleteDialogContent productId={product.id} />
+      </Dialog>
+    </AlertDialog>
+  );
+};
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") {
@@ -79,38 +124,7 @@ export const columns: ColumnDef<Product>[] = [
     header: "Actions",
     cell: (row) => {
       const product = row.row.original;
-      return (
-        <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                <MoreHorizontalIcon size={20} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(product.id)}
-              >
-                <ClipboardCopyIcon size={16} />
-                Copy ID
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <EditIcon size={16} />
-                Edit
-              </DropdownMenuItem>
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem>
-                  <TrashIcon size={16} />
-                  Delete
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DeleteDialogContent productId={product.id} />
-        </AlertDialog>
-      );
+      return <ActionCell product={product} />;
     },
   },
 ];

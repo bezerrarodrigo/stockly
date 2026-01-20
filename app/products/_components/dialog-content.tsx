@@ -2,9 +2,9 @@
 
 import {
   createProductSchema,
-  CreateProductSchema,
+  UpsertProductSchema,
 } from "@/app/_actions/products/_schemas/schemas";
-import createProduct from "@/app/_actions/products/create-product";
+import upsertProduct from "@/app/_actions/products/upsert-product";
 import { Button } from "@/app/_components/ui/button";
 import {
   DialogClose,
@@ -27,15 +27,19 @@ import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
-interface DialogProductContentProps {
+interface UpsertDialogProductContentProps {
+  defaultValues?: UpsertProductSchema;
   onClose?: () => void;
 }
 
-function DialogProductContent({ onClose }: DialogProductContentProps) {
+function UpsertDialogProductContent({
+  onClose,
+  defaultValues,
+}: UpsertDialogProductContentProps) {
   //hooks
-  const form = useForm<CreateProductSchema>({
+  const form = useForm<UpsertProductSchema>({
     resolver: zodResolver(createProductSchema),
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       name: "",
       price: 0,
       stock: 1,
@@ -44,22 +48,28 @@ function DialogProductContent({ onClose }: DialogProductContentProps) {
   });
 
   //functions
-  async function onSubmit(data: CreateProductSchema) {
+  async function onSubmit(data: UpsertProductSchema) {
     try {
-      await createProduct(data); // server action
+      await upsertProduct({ ...data, id: defaultValues?.id }); // server action
       onClose?.();
-      toast.success("Product created successfully!");
+      if (defaultValues) {
+        toast.success("Product updated successfully!");
+      } else {
+        toast.success("Product created successfully!");
+      }
     } catch (error) {
       console.log(error);
       toast.error("There was an error creating the product.");
     }
   }
 
+  const isEditing = !!defaultValues;
+
   return (
     <DialogContent>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <DialogHeader>
-          <DialogTitle>Create product</DialogTitle>
+          <DialogTitle>{isEditing ? "Edit" : "Create"} product</DialogTitle>
           <DialogDescription>
             Please, fill in the information below.
           </DialogDescription>
@@ -137,7 +147,7 @@ function DialogProductContent({ onClose }: DialogProductContentProps) {
             {form.formState.isSubmitting && (
               <Loader2Icon className="size-5 animate-spin" />
             )}
-            Add product
+            Save
           </Button>
         </DialogFooter>
       </form>
@@ -145,4 +155,4 @@ function DialogProductContent({ onClose }: DialogProductContentProps) {
   );
 }
 
-export default DialogProductContent;
+export default UpsertDialogProductContent;

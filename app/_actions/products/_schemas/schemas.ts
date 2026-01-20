@@ -1,6 +1,7 @@
 import z from "zod";
 
 export const createProductSchema = z.object({
+  id: z.string().optional(),
   name: z
     .string()
     .trim()
@@ -9,4 +10,4 @@ export const createProductSchema = z.object({
   stock: z.number().int().min(1, { message: "Stock is required." }),
 });
 
-export type CreateProductSchema = z.infer<typeof createProductSchema>;
+export type UpsertProductSchema = z.infer<typeof createProductSchema>;
