@@ -28,55 +28,7 @@ import { Dialog } from "../_components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import UpsertDialogProductContent from "./_components/dialog-content";
 import { useState } from "react";
-
-const ActionCell = ({ product }: { product: Product }) => {
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  return (
-    <AlertDialog>
-      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <MoreHorizontalIcon size={20} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
-            >
-              <ClipboardCopyIcon size={16} />
-              Copy ID
-            </DropdownMenuItem>
-            <DialogTrigger asChild>
-              <DropdownMenuItem>
-                <EditIcon size={16} />
-                Edit
-              </DropdownMenuItem>
-            </DialogTrigger>
-            <AlertDialogTrigger asChild>
-              <DropdownMenuItem>
-                <TrashIcon size={16} />
-                Delete
-              </DropdownMenuItem>
-            </AlertDialogTrigger>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <UpsertDialogProductContent
-          defaultValues={{
-            id: product.id,
-            name: product.name,
-            price: Number(product.price),
-            stock: product.stock,
-          }}
-          onClose={() => setEditDialogOpen(false)}
-        />
-        <DeleteDialogContent productId={product.id} />
-      </Dialog>
-    </AlertDialog>
-  );
-};
+import { ActionCell } from "./table-cell";
 
 const getStatusLabel = (status: string) => {
   if (status === "IN_STOCK") {
