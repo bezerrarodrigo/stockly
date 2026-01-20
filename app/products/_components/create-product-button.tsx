@@ -36,20 +36,6 @@ function CreateProductButton() {
   //state
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  //functions
-  async function onSubmit(data: CreateProductSchema) {
-    try {
-      await createProduct(data); // server action
-      setDialogOpen(false);
-      toast.success("Product created successfully!");
-    } catch (error) {
-      console.log(error);
-      toast.error("There was an error creating the product.");
-    }
-  }
-
-  // <-- Component Render --> //
-
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
@@ -58,7 +44,7 @@ function CreateProductButton() {
           New product
         </Button>
       </DialogTrigger>
-      <DialogProductContent onSubmit={onSubmit} />
+      <DialogProductContent onClose={() => setDialogOpen(false)} />
     </Dialog>
   );
 }

@@ -4,6 +4,7 @@ import {
   createProductSchema,
   CreateProductSchema,
 } from "@/app/_actions/products/_schemas/schemas";
+import createProduct from "@/app/_actions/products/create-product";
 import { Button } from "@/app/_components/ui/button";
 import {
   DialogClose,
@@ -24,12 +25,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 
 interface DialogProductContentProps {
-  onSubmit: (data: CreateProductSchema) => Promise<void>;
+  onClose?: () => void;
 }
 
-function DialogProductContent({ onSubmit }: DialogProductContentProps) {
+function DialogProductContent({ onClose }: DialogProductContentProps) {
   //hooks
   const form = useForm<CreateProductSchema>({
     resolver: zodResolver(createProductSchema),
@@ -40,6 +42,18 @@ function DialogProductContent({ onSubmit }: DialogProductContentProps) {
     },
     shouldUnregister: true,
   });
+
+  //functions
+  async function onSubmit(data: CreateProductSchema) {
+    try {
+      await createProduct(data); // server action
+      onClose?.();
+      toast.success("Product created successfully!");
+    } catch (error) {
+      console.log(error);
+      toast.error("There was an error creating the product.");
+    }
+  }
 
   return (
     <DialogContent>
